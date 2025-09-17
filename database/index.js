@@ -1,43 +1,69 @@
-import Sequelize, { HasOne } from 'sequelize';
+import express from 'express';
+import cors from 'cors';
+import Sequelize from 'sequelize';
 import animalmodel from './animal.js';
 import Doacaomodel from './Doacao.js';
 import pedidos_adocaomodel from './PedidoAdocao.js';
-import questionariomodel from './Questionario.js'
-import usuariomodel from './usuario.js'
+import questionariomodel from './Questionario.js';
+import usuariomodel from './usuario.js';
+import animaisroutes from '../routes/animaisroutes.js';
+import doacaoroutes from '../routes/doacaoroutes.js';
+import pedidisodeadocaoroutes from '../routes/pedidisodeadocaoroutes.js';
+import questionarioroutes from '../routes/questionarioroutes.js';
+import usuarioroutes from '../routes/usuarioroutes.js';
+import autenticationroutes from '../routes/autenticationroutes.js';
+import { createAdminUser } from '../seeds/admin-seed.js';
 
+const app = express();
+const PORT = 3000;
 
-    const sequelize = new Sequelize({
-        dialect : 'sqlite',
-        storage : './database/database.sqlite'
-    });
-    
-    const animal = animalmodel(sequelize);
-    const doacao = Doacaomodel(sequelize);
-    const pedidosAdocao = pedidos_adocaomodel(sequelize);
-    const questionario = questionariomodel(sequelize);
-    const usuario = usuariomodel(sequelize);
+app.use(express.json());
+app.use(cors());
 
-  
-usuario.hasOne(questionario, { foreignKey: "tutor_id"});
-  questionario.belongsTo(Tutor, {foreignKey: "tutor_id"});
-  
-  usuario.hasMany(pedidosAdocao, {foreignKey: "tutor_id"});
-  pedidosAdocao.belongsTo(Tutor, {foreignKey: "tutor_id"});
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: './database/database.sqlite'
+});
 
-  animal.hasMany(pedidosAdocao, {foreignKey: "animal_id"});
-  pedidosAdocao.belongsTo(Animal, {foreignKey: "animal_id"});
-  
+const Animal = animalmodel(sequelize);
+const Doacao = Doacaomodel(sequelize);
+const PedidoAdocao = pedidos_adocaomodel(sequelize);
+const Questionario = questionariomodel(sequelize);
+const Usuario = usuariomodel(sequelize);
 
+Usuario.hasOne(Questionario, { foreignKey: "tutor_id" });
+Questionario.belongsTo(Usuario, { foreignKey: "tutor_id" });
 
-const connect = async () =>  {
+Usuario.hasMany(PedidoAdocao, { foreignKey: "tutor_id" });
+PedidoAdocao.belongsTo(Usuario, { foreignKey: "tutor_id" });
+
+Animal.hasMany(PedidoAdocao, { foreignKey: "animal_id" });
+PedidoAdocao.belongsTo(Animal, { foreignKey: "animal_id" });
+
+const connect = async () => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync();
+        await sequelize.sync({ alter: true });
         console.log('Conexão com o banco de dados foi bem sucedida.');
+        await createAdminUser();
+    } catch (error) {
+        console.error('Não foi possível conectar com o banco de dados:', error);
     }
-    catch (error) {
-        console.error('Não foi possível conectar ao banco de dados:', error);
-    };
 };
-export {sequelize, connect };
 
+connect();
+
+app.use('/api', animaisroutes);
+app.use('/api', doacaoroutes);
+app.use('/api', pedidisodeadocaoroutes);
+app.use('/api', questionarioroutes);
+app.use('/api', usuarioroutes);
+app.use('/api', autenticationroutes);
+
+app.get('/', (req, res) => {
+    res.send('API REST para Sistema de Adoção de Animais');
+});
+
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});

@@ -1,81 +1,67 @@
-import express from 'express';
-import { cliente } from '../database/index.js';
+import express from "express";
+import encrypt from "encryptjs";
+import { Usuario, Questionario } from "../database/index.js";
 
 const router = express.Router();
+const chave = "segredo";
 
+router.post("/usuario", async (req, res) => {
+  try {
+    const { nome_completo, email, senha, cidade, estado, idade, telefone, instagram, facebook } = req.body;
 
-router.post('/cliente', async (req, res) => {
-    try {
-        const novoCliente = await cliente.create({
-            nome: req.body.nome, 
-            cnpj: req.body.cnpj,
-            datainclusao: new Date()
-        });
-        res.status(201).json(novoCliente); 
-    } catch (error) {
-        console.log(`Erro ao criar cliente: ${error}`);
-        res.status(400).json({ error: 'Falha ao criar cliente' }); 
+    if (!nome_completo || !email || !senha || !cidade || !estado || !idade || !telefone) {
+      return res.status(400).json({ erro: "Todos os campos obrigatórios devem ser preenchidos corretamente." });
     }
+
+    const existe = await Usuario.findOne({ where: { email } });
+    if (existe) return res.status(400).json({ erro: "Email preenchido já está sendo utilizado." });
+
+    const senhaCriptografada = encrypt.encrypt(senha, chave, 256);
+
+    const novoUsuario = await Usuario.create({
+      nome_completo,
+      email,
+      senha: senhaCriptografada,
+      cidade,
+      estado,
+      idade,
+      telefone,
+      instagram,
+      facebook
+    });
+
+    return res.status(201).json(novoUsuario);
+  } catch (error) {
+    console.error("Erro ao cadastrar usuário:", error);
+    return res.status(500).json({ erro: "Erro interno ao cadastrar o tutor." });
+  }
 });
 
+router.patch("/tutores/:id", async (req, res) => {
+  try {
+    const tutor = await Usuario.findByPk(req.params.id);
+    if (!tutor) return res.status(404).json({ erro: "Tutor não encontrado" });
 
-router.get('/cliente', async (req, res) => {
-    try {
-        const clientes = await cliente.findAll(); 
-        res.json(clientes);
-    } catch (error) {
-        console.log(`Erro ao buscar clientes: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
+    await tutor.update(req.body);
+    return res.status(200).json(tutor);
+  } catch (error) {
+    console.error("Erro ao atualizar tutor:", error);
+    return res.status(500).json({ erro: "Erro ao atualizar os dados do tutor" });
+  }
 });
 
-router.get ('/cliente/:id', async (req, res) => {
-    try {
-        const cliente = await cliente.findByPk(req.params.id);
-        if (!cliente) {
-            return res.status(404).json({ error: 'Cliente não encontrado' });
-        }
-        res.json(cliente);
-    }catch (error) {
-        console.log(`Erro ao buscar cliente: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-});
+router.get("/tutores/:id", async (req, res) => {
+  try {
+    const tutor = await Usuario.findByPk(req.params.id, {
+      include: Questionario
+    });
+    if (!tutor) return res.status(404).json({ erro: "Tutor não encontrado" });
 
-router.put('/cliente/:id', async (req, res) => {
-    try {
-        const [update] = await cliente.update(req.body, {
-            where: { id: req.params.id }
-        });
-        
-        if (update) {
-            const clienteAtualizado = await cliente.findByPk(req.params.id);
-            res.json(clienteAtualizado);
-        } else {
-            res.status(404).json({ error: 'Cliente não encontrado' });
-        }
-    } catch (error) {
-        console.log(`Erro ao atualizar cliente: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-});
-
-
-router.delete('/cliente/:id', async (req, res) => {
-    try {
-        const deleted = await cliente.destroy({
-            where: { id: req.params.id },
-        });
-        
-        if (deleted) {
-            res.status(204).end(''); 
-        } else {
-            res.status(404).json({ error: 'Cliente não encontrado' });
-        }
-    } catch (error) {
-        console.log(`Erro ao deletar cliente: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
+    return res.status(200).json(tutor);
+  } catch (error) {
+    console.error("Erro ao buscar tutor:", error);
+    return res.status(500).json({ erro: "Erro ao buscar dados do tutor" });
+  }
 });
 
 export default router;

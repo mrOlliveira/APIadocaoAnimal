@@ -1,39 +1,39 @@
-import express from 'express';
-import { pedidoAdocao } from '../database/index.js';
-
+import express from "express";
+import { PedidoAdocao, Usuario, Animal } from "../database/index.js";
 
 const router = express.Router();
 
-router.post('/pedidoadocao', async (req, res) => {
-    try {
-        const pedidoAdocao = await pedidoAdocao.create({
-            id: req.body.id, 
-            tutor_id: req.body.tutor_id,
-            animal_id: req.body.animal_id,
-            status: req.body.status, 
-            posicao_fila: req.body.posicao_fila,
-            criado_em: req.body.criado_em,
-        });
-        
-        res.log("Pedido criado com sucesso:");
-        res.status(201).json(pedidoAdocao);
+router.post("/adocoes", async (req, res) => {
+  try {
+    const { tutor_id, animal_id } = req.body;
 
-        if (!tutor_id || !animal_id) {
-            res.status(404).json({error: 'tutor ou animal não encontrado'});
-        }
-        const pedididoExistente = await pedidoAdocao.findOne({
-            where: { tutor_id, animal_id, status: "em_analise" }
-          });
-      
-          if (pedidoExistente) {
-            return res.status(409).json({ erro: "Este tutor já tem um pedido de adoção para este animal" });
-          }
-          
-    } catch (error) {
-        console.log(`Erro ao enviar o pedido de adoção: ${error}`);
-        res.status(400).json({ error: 'O tutor ainda não respondeu o questionário obrigatório' }); 
+    const tutor = await Usuario.findByPk(tutor_id);
+    const animal = await Animal.findByPk(animal_id);
 
-        console.error(err);
-        return res.status(500).json({ erro: "Erro ao registrar o pedido de adoção" });
+    if (!tutor || !animal) {
+      return res.status(404).json({ erro: "Tutor ou animal não encontrado" });
     }
-}); 
+
+    const pedidoExistente = await PedidoAdocao.findOne({
+      where: { tutor_id, animal_id, status: "em_analise" }
+    });
+    if (pedidoExistente) {
+      return res.status(409).json({ erro: "Este tutor já tem um pedido de adoção para este animal" });
+    }
+
+    const fila = await PedidoAdocao.count({ where: { animal_id } });
+    const novoPedido = await PedidoAdocao.create({
+      tutor_id,
+      animal_id,
+      status: "em_analise",
+      posicao_fila: fila + 1
+    });
+
+    return res.status(201).json(novoPedido);
+  } catch (error) {
+    console.error("Erro ao criar pedido:", error);
+    return res.status(500).json({ erro: "Erro ao registrar o pedido de adoção" });
+  }
+});
+
+export default router;

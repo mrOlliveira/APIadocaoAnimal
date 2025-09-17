@@ -9,7 +9,7 @@ export default (sequelize) => {
             allowNull: false
         },
         status: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM('em_analise', 'aprovado', 'rejeitado'),
             defaultValue: 'em_analise',
             allowNull: false
         },
@@ -17,11 +17,11 @@ export default (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: true
         },
-        tutorId: {
+        tutor_id: {  // 🔥 padronizado para snake_case
             type: DataTypes.UUID,
             allowNull: false
         },
-        animalId: {
+        animal_id: { // 🔥 padronizado para snake_case
             type: DataTypes.UUID,
             allowNull: false
         }

@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 export default (sequelize) => {
-    const Usuario = sequelize.define('usuario', {
+    const Usuario = sequelize.define('Usuario', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -55,7 +55,7 @@ export default (sequelize) => {
             allowNull: true
         },
         cep: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: true
         },
         instagram: {
@@ -72,7 +72,7 @@ export default (sequelize) => {
             defaultValue: false
         }
     }, {
-        tableName: 'Usuario',
+        tableName: 'usuarios',
         timestamps: true
     });
 

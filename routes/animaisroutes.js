@@ -1,85 +1,39 @@
-import express from 'express';
-import { animal } from '../database/index.js';
+import express from "express";
+import { Animal, PedidoAdocao } from "../database/index.js";
 
 const router = express.Router();
 
-
-router.post('/animais', async (req, res) => {
-    try {
-        const novoAnimal = await animal.create({
-            nome: req.body.nome, 
-            especie: req.body.especie,
-            porte: req.body.porte,
-            castrado: req.body.cadastrado,
-            vacinado: req.body.vacinado,
-            descricao: req.body.descricao,
-            foto: req.body.foto
-        });
-        res.status(201).json(novoAnimais); 
-    } catch (error) {
-        console.log(`Erro ao criar animal: ${error}`);
-        res.status(400).json({ error: 'Falha ao criar animal' }); 
-    }
+router.post("/animais", async (req, res) => {
+  try {
+    const novoAnimal = await Animal.create(req.body);
+    return res.status(201).json(novoAnimal);
+  } catch (error) {
+    console.error("Erro ao criar animal:", error);
+    return res.status(400).json({ erro: "Falha ao criar animal" });
+  }
 });
 
-
-router.get('/animais', async (req, res) => {
-    try {
-        const animais = await animal.findAll(); 
-        res.json(animais);
-    } catch (error) {
-        console.log(`Erro ao buscar animais: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
+router.get("/animais", async (req, res) => {
+  try {
+    const animais = await Animal.findAll();
+    return res.status(200).json({ data: animais, total: animais.length });
+  } catch (error) {
+    console.error("Erro ao buscar animais:", error);
+    return res.status(500).json({ erro: "Erro ao buscar animais" });
+  }
 });
 
-router.get ('/animal/:id', async (req, res) => {
-    try {
-        const animal = await animal.findByPk(req.params.id);
-        if (!animal) {
-            return res.status(404).json({ error: 'Animal não encontrado' });
-        }
-        res.json(animal);
-    }catch (error) {
-        console.log(`Erro ao buscar animal: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-});
-
-router.put('/animal/:id', async (req, res) => {
-    try {
-        const [update] = await animal.update(req.body, {
-            where: { id: req.params.id }
-        });
-        
-        if (update) {
-            const animalAtualizado = await animal.findByPk(req.params.id);
-            res.json(animalAtualizado);
-        } else {
-            res.status(404).json({ error: 'animal não encontrado' });
-        }
-    } catch (error) {
-        console.log(`Erro ao atualizar animal: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-});
-
-
-router.delete('/animal/:id', async (req, res) => {
-    try {
-        const deleted = await animal.destroy({
-            where: { id: req.params.id },
-        });
-        
-        if (deleted) {
-            res.status(204).end(''); 
-        } else {
-            res.status(404).json({ error: 'animal não encontrado' });
-        }
-    } catch (error) {
-        console.log(`Erro ao deletar animal: ${error}`);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
+router.get("/animais/:id", async (req, res) => {
+  try {
+    const animal = await Animal.findByPk(req.params.id, {
+      include: PedidoAdocao
+    });
+    if (!animal) return res.status(404).json({ erro: "Animal não encontrado" });
+    return res.status(200).json(animal);
+  } catch (error) {
+    console.error("Erro ao buscar animal:", error);
+    return res.status(500).json({ erro: "Erro interno do servidor" });
+  }
 });
 
 export default router;
