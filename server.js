@@ -4,7 +4,7 @@ import usuarioroutes from './routes/usuarioroutes.js';
 import animaisroutes from './routes/animaisroutes.js';
 import pedidoadocaoroutes from './routes/pedidisodeadocaoroutes.js';
 import doacaoroutes from './routes/doacaoroutes.js';
-import autenticacaoroutes from './routes/autenticacaoroutes.js';
+import autenticationroutes from './routes/autenticationroutes.js';
 import cors from 'cors';
 
 const app = express();
@@ -18,11 +18,11 @@ app.use(express.json());
 
 connect();
 
-app.use('/', usuarioroutes);
-app.use('/', animaisroutes);
-app.use('/', pedidoadocaoroutes);
-app.use('/', doacaoroutes);
-app.use('/', autenticacaoroutes);
+app.use('/api', usuarioroutes);
+app.use('/api', animaisroutes);
+app.use('/api', pedidoadocaoroutes);
+app.use('/api', doacaoroutes);
+app.use('/api', autenticationroutes);
 
 app.get('/', (req, res) => {
     res.json({ mensagem: 'API de Adoção de Animais rodando 🚀' });
