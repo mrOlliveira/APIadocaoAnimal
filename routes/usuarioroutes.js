@@ -18,7 +18,8 @@ router.post("/usuario", async (req, res) => {
 
     const senhaCriptografada = encrypt.encrypt(senha, chave, 256);
 
-    const novoUsuario = await Usuario.create({
+    const novoUsuario = await Usuario.create(//req.body)
+    {
       nome_completo,
       email,
       senha: senhaCriptografada,
@@ -47,6 +48,19 @@ router.patch("/tutores/:id", async (req, res) => {
   } catch (error) {
     console.error("Erro ao atualizar tutor:", error);
     return res.status(500).json({ erro: "Erro ao atualizar os dados do tutor" });
+  }
+});
+
+router.get("/tutores", async (req, res) => {
+  try {
+    const tutores = await Usuario.findAll({
+      include: Questionario
+    });
+
+    return res.status(200).json(tutores);
+  } catch (error) {
+    console.error("Erro ao buscar tutores:", error);
+    return res.status(500).json({ erro: "Erro ao buscar dados dos tutores" });
   }
 });
 

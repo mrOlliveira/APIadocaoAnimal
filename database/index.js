@@ -5,10 +5,18 @@ import pedidos_adocaomodel from './PedidoAdocao.js';
 import questionariomodel from './Questionario.js';
 import usuariomodel from './usuario.js';
 import { createAdminUser } from '../seeds/admin-seed.js';
+import dotenv from 'dotenv';
 
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: './database/database.sqlite'
+//supabase 
+dotenv.config();
+export const sequelize = new Sequelize({
+  username: 'postgres',
+  password: 'Pelocerto13_',
+  database: 'postgres',
+  host: 'db.utapffvtxxrsnekkbehx.supabase.co',
+  port: 5432,
+  dialect: 'postgres',
+  logging: false
 });
 
 const Animal = animalmodel(sequelize);
