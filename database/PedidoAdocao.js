@@ -17,11 +17,11 @@ export default (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: true
         },
-        tutor_id: {  // 🔥 padronizado para snake_case
+        tutor_id: {  
             type: DataTypes.UUID,
             allowNull: false
         },
-        animal_id: { // 🔥 padronizado para snake_case
+        animal_id: {
             type: DataTypes.UUID,
             allowNull: false
         }

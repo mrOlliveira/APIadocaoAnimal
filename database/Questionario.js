@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+    import { DataTypes } from 'sequelize';
 
 export default (sequelize) => {
     const Questionario = sequelize.define('Questionario', {

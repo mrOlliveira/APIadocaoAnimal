@@ -1,22 +1,25 @@
 import Sequelize from 'sequelize';
 import animalmodel from './animal.js';
-import Doacaomodel from './Doacao.js';
+import Doacaomodel from './doacao.js';
 import pedidos_adocaomodel from './PedidoAdocao.js';
-import questionariomodel from './Questionario.js';
+import questionariomodel from './questionario.js';
 import usuariomodel from './usuario.js';
 import { createAdminUser } from '../seeds/admin-seed.js';
 import dotenv from 'dotenv';
 
-//supabase 
 dotenv.config();
-export const sequelize = new Sequelize({
-  username: 'postgres',
-  password: 'Pelocerto13_',
-  database: 'postgres',
-  host: 'db.utapffvtxxrsnekkbehx.supabase.co',
-  port: 5432,
-  dialect: 'postgres',
-  logging: false
+
+export const sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
+    },
+    host: 'db.utapffvtxxrsnekkbehx.supabase.co',
+    port: 6543,
+    protocol: 'tcp4'
 });
 
 const Animal = animalmodel(sequelize);
@@ -38,10 +41,10 @@ const connect = async () => {
     try {
         await sequelize.authenticate();
         await sequelize.sync({ alter: true });
-        console.log('Conexão com o banco de dados foi bem sucedida.');
+        console.log('Conexão com o banco de dados foi bem sucedida e modelos sincronizados.');
         await createAdminUser();
     } catch (error) {
-        console.error('Não foi possível conectar com o banco de dados:', error);
+        console.error('Não foi possível conectar ou sincronizar o banco de dados:', error);
     }
 };
 
