@@ -31,7 +31,7 @@ Pré-requisitos
 
 Bash
 
-git clone https://www.youtube.com/watch?v=RqfwLeY952s
+git clone https://github.com/mrOlliveira/APIadocaoAnimal
 cd sistema-adocao-api
 
 2. Instalar Dependências
