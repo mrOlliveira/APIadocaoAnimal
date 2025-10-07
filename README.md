@@ -2,13 +2,12 @@
 
 API RESTful desenvolvida para gerenciar o processo de adoção de animais, desde o cadastro dos pets até o gerenciamento dos pedidos de adoção por tutores.
 
-👥 Integrantes do Grupo e Turma
+👥 Integrantes do Grupo YSL
 
 Nome Completo
-["Joaquim Franco"]
+[Joaquim Franco]
 [Miguel Carriscar]
 [Murilo Reis]
-...	...
 
 🚀 Tecnologias Utilizadas
 
@@ -32,25 +31,25 @@ Pré-requisitos
 
 Bash
 
-git clone https://www.youtube.com/watch?v=RqfwLeY952s
-cd sistema-adocao-api
+    git clone https://github.com/mrOlliveira/APIadocaoAnimal
+    cd sistema-adocao-api
 
 2. Instalar Dependências
 
 Bash
 
-npm install 
-# ou
-yarn install
+    npm install 
+    # ou
+    yarn install
 
 
 3. Executar o Servidor
 
 Bash
 
-npm start
-# ou
-npm run dev # Se você tiver um script de desenvolvimento
+    npm start
+    # ou
+    npm run dev # Se você tiver um script de desenvolvimento
 
 A API estará rodando em http://localhost:[PORTA_CONFIGURADA].
 
