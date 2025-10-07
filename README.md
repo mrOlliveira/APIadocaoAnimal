@@ -2,13 +2,12 @@
 
 API RESTful desenvolvida para gerenciar o processo de adoção de animais, desde o cadastro dos pets até o gerenciamento dos pedidos de adoção por tutores.
 
-👥 Integrantes do Grupo e Turma
+👥 Integrantes do Grupo YSL
 
 Nome Completo
 [Joaquim Franco]
 [Miguel Carriscar]
 [Murilo Reis]
-...	...
 
 🚀 Tecnologias Utilizadas
 
