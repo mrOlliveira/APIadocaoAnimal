@@ -31,25 +31,25 @@ Pré-requisitos
 
 Bash
 
-git clone https://github.com/mrOlliveira/APIadocaoAnimal
-cd sistema-adocao-api
+    git clone https://github.com/mrOlliveira/APIadocaoAnimal
+    cd sistema-adocao-api
 
 2. Instalar Dependências
 
 Bash
 
-npm install 
-# ou
-yarn install
+    npm install 
+    # ou
+    yarn install
 
 
 3. Executar o Servidor
 
 Bash
 
-npm start
-# ou
-npm run dev # Se você tiver um script de desenvolvimento
+    npm start
+    # ou
+    npm run dev # Se você tiver um script de desenvolvimento
 
 A API estará rodando em http://localhost:[PORTA_CONFIGURADA].
 
