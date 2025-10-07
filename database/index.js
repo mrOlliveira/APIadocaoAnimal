@@ -40,7 +40,7 @@ PedidoAdocao.belongsTo(Animal, { foreignKey: "animal_id" });
 const connect = async () => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync({ alter: true });
+        await sequelize.sync({ });
         console.log('Conexão com o banco de dados foi bem sucedida e modelos sincronizados.');
         await createAdminUser();
     } catch (error) {
