@@ -5,7 +5,7 @@ API RESTful desenvolvida para gerenciar o processo de adoção de animais, desde
 👥 Integrantes do Grupo e Turma
 
 Nome Completo
-["Joaquim Franco"]
+[Joaquim Franco]
 [Miguel Carriscar]
 [Murilo Reis]
 ...	...
